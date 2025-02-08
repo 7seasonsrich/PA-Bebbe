@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PA Bebbe Study Hub</title>
+  <style>
+    /* General & Background */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffccff; /* light pink */
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      position: relative;
+    }
+    /* Floating Animation Container */
+    #animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .floating-emoji {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh);
+        opacity: 0;
+      }
+    }
+    /* Header & Greeting (Wavy Effect) */
+    header {
+      text-align: center;
+      padding: 20px;
+    }
+    #greeting {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 48px;
+      color: red;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      display: inline-block;
+    }
+    #greeting span {
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+    #greeting:hover span {
+      animation: wave 0.5s ease-in-out infinite;
+    }
+    @keyframes wave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    /* Main Layout */
+    main {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .columns-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .column {
+      flex: 1;
+      margin: 10px;
+      min-width: 300px;
+    }
+    .center-column {
+      text-align: center;
+    }
+    section {
+      margin-bottom: 40px;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    /* Flashcards Section */
+    #flashcardForm input,
+    #flashcardForm button {
+      padding: 8px;
+      margin: 5px;
+      font-size: 14px;
+    }
+    #flashcardsContainer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .flashcard {
+      width: 250px;
+      height: 150px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+    .flashcard.flipped .flashcard-inner {
+      transform: rotateY(180deg);
+    }
+    .flashcard-front, .flashcard-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 2px solid #ff66cc;
+      border-radius: 8px;
+    }
+    .flashcard-back {
+      transform: rotateY(180deg);
+      background-color: #ffe6f2;
+    }
+    /* Affirmation Slider Section */
+    #affirmationSlider {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 20px 0;
+      min-height: 40px;
+    }
+    /* YouTube Section Styling */
+    #youtubeVideoId {
+      padding: 10px;
+      width: 70%;
+      border: 2px solid #ff66cc;
+      border-radius: 8px;
+    }
+    #youtube-section button {
+      padding: 10px 20px;
+      background-color: #FF0000;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-left: 10px;
+    }
+    /* Footer Buttons */
+    footer {
+      background-color: #ffccff;
+      padding: 20px 0;
+    }
+    .footer-buttons {
+      text-align: center;
+    }
+    .footer-buttons button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Floating Emojis -->
+  <div id="animation-container"></div>
+
+  <!-- Header with Wavy Greeting -->
+  <header>
+    <h1 id="greeting">
+      <span>H</span><span>I</span> <span>P</span><span>A</span> <span>B</span><span>E</span><span>B</span><span>B</span><span>E</span>
+    </h1>
+  </header>
+
+  <!-- Main Content with Columns -->
+  <main>
+    <div class="columns-container">
+      <!-- Left Column: Flashcards -->
+      <div class="column left-column">
+        <section id="flashcards-section">
+          <h2>Flashcards</h2>
+          <!-- Form to Create Flashcards -->
+          <form id="flashcardForm">
+            <input type="text" id="flashcardCategory" placeholder="Category (e.g., Anatomy)" required>
+            <input type="text" id="flashcardQuestion" placeholder="Question" required>
+            <input type="text" id="flashcardAnswer" placeholder="Answer" required>
+            <button type="submit">Add Flashcard</button>
+          </form>
+          <!-- Filter Dropdown -->
+          <div style="text-align:center; margin-top:10px;">
+            <label for="flashcardFilter">Filter by Category:</label>
+            <select id="flashcardFilter">
+              <option value="all">All Categories</option>
+            </select>
+          </div>
+          <!-- Container to Display Flashcards -->
+          <div id="flashcardsContainer"></div>
+        </section>
+      </div>
+
+      <!-- Center Column: Affirmations -->
+      <div class="column center-column">
+        <section id="affirmation-section">
+          <h2>Positive Affirmations</h2>
+          <div id="affirmationSlider"></div>
+          <div id="garyRating" style="margin-top: 10px; font-size: 16px;">Gary Rating: 5/5</div>
+          <div style="text-align:center;">
+            <button onclick="prevAffirmation()">Previous</button>
+            <button onclick="nextAffirmation()">Next</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column: Medication Search & YouTube -->
+      <div class="column right-column">
+        <!-- Medication Search Section using Google Custom Search -->
+        <section id="medication-section">
+          <h2>Medication Search</h2>
+          <!-- Google Custom Search Element (using your provided ID) -->
+          <script async src="https://cse.google.com/cse.js?cx=a3d98c564d7e04e3b"></script>
+          <div class="gcse-search"></div>
+        </section>
+
+        <!-- YouTube Section -->
+        <section id="youtube-section">
+          <h2>YouTube</h2>
+          <div style="text-align:center;">
+            <input type="text" id="youtubeVideoId" placeholder="Enter YouTube Video ID">
+            <button onclick="loadYouTubeVideo()">Play Video</button>
+          </div>
+          <iframe id="youtubePlayer" src="" width="300" height="170" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:block; margin: 20px auto;"></iframe>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer with Spotify & Instagram Buttons -->
+  <footer>
+    <div class="footer-buttons">
+      <button id="spotifyButton" onclick="playSpotifySong()" style="background-color: #1DB954; color: white;">Play Spotify Song</button>
+      <a href="https://www.instagram.com/yourusername" target="_blank" style="text-decoration:none;">
+        <button style="background-color: #C13584; color: white;">Open Instagram</button>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    /* =============================
+       Floating Emoji Background
+       ============================= */
+    function generateFloatingEmojis(count) {
+      const container = document.getElementById('animation-container');
+      const emojis = ["♥", "🌸", "⭐", "🦋"];
+      for (let i = 0; i < count; i++) {
+        const emojiSpan = document.createElement('span');
+        emojiSpan.classList.add('floating-emoji');
+        emojiSpan.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        // Random horizontal start position
+        emojiSpan.style.left = Math.random() * 100 + "vw";
+        // Randomize animation duration and delay
+        const duration = Math.random() * 12 + 8;
+        emojiSpan.style.animationDuration = duration + "s";
+        const delay = Math.random() * 10;
+        emojiSpan.style.animationDelay = delay + "s";
+        emojiSpan.style.opacity = 1;
+        container.appendChild(emojiSpan);
+      }
+    }
+    generateFloatingEmojis(30);
+
+    /* =============================
+       Flashcards Functionality
+       ============================= */
+    let flashcards = JSON.parse(localStorage.getItem('flashcards')) || [];
+    const flashcardForm = document.getElementById('flashcardForm');
+    const flashcardsContainer = document.getElementById('flashcardsContainer');
+    const flashcardFilter = document.getElementById('flashcardFilter');
+
+    flashcardForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const category = document.getElementById('flashcardCategory').value.trim();
+      const question = document.getElementById('flashcardQuestion').value.trim();
+      const answer = document.getElementById('flashcardAnswer').value.trim();
+      if (category && question && answer) {
+        const newCard = { id: Date.now(), category, question, answer };
+        flashcards.push(newCard);
+        localStorage.setItem('flashcards', JSON.stringify(flashcards));
+        updateFlashcardsUI();
+        flashcardForm.reset();
+      }
+    });
+
+    function updateFlashcardsUI() {
+      flashcardsContainer.innerHTML = "";
+      updateFilterOptions();
+      const selectedFilter = flashcardFilter.value;
+      flashcards.forEach(card => {
+        if (selectedFilter === "all" || card.category === selectedFilter) {
+          const cardDiv = document.createElement('div');
+          cardDiv.className = "flashcard";
+          cardDiv.onclick = function() { this.classList.toggle('flipped'); };
+          cardDiv.innerHTML = `
+            <div class="flashcard-inner">
+              <div class="flashcard-front">${card.question}</div>
+              <div class="flashcard-back">${card.answer}</div>
+            </div>
+          `;
+          flashcardsContainer.appendChild(cardDiv);
+        }
+      });
+    }
+
+    function updateFilterOptions() {
+      const categories = [...new Set(flashcards.map(card => card.category))];
+      flashcardFilter.innerHTML = `<option value="all">All Categories</option>`;
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        flashcardFilter.appendChild(option);
+      });
+    }
+    flashcardFilter.addEventListener('change', updateFlashcardsUI);
+    updateFlashcardsUI();
+
+    /* =============================
+       Affirmation Slider Functionality
+       ============================= */
+    const affirmations = [
+      "You're beautiful, strong, and capable.",
+      "Every challenge is an opportunity to grow.",
+      "You are intelligent and can overcome any obstacle.",
+      "Believe in yourself—amazing things will happen.",
+      "Your hard work and dedication will pay off."
+    ];
+    let currentAffIndex = 0;
+    const affirmationSlider = document.getElementById('affirmationSlider');
+
+    function updateAffirmation() {
+      affirmationSlider.textContent = affirmations[currentAffIndex];
+    }
+    function nextAffirmation() {
+      currentAffIndex = (currentAffIndex + 1) % affirmations.length;
+      updateAffirmation();
+    }
+    function prevAffirmation() {
+      currentAffIndex = (currentAffIndex - 1 + affirmations.length) % affirmations.length;
+      updateAffirmation();
+    }
+    updateAffirmation();
+
+    /* =============================
+       Spotify Integration (Demo)
+       ============================= */
+    function playSpotifySong() {
+      // For demonstration, we use a fixed Spotify track embed.
+      // Replace the track ID with your desired song’s ID.
+      const trackId = "5ChkMS8OtdzJeqyybCc9R5"; // Example track ID
+      const embedUrl = `https://open.spotify.com/embed/track/${trackId}`;
+      // Here we open the embed in a new window—you can modify this to integrate it directly.
+      window.open(embedUrl, "_blank", "width=350,height=200");
+    }
+
+    /* =============================
+       YouTube Integration
+       ============================= */
+    function loadYouTubeVideo() {
+      const videoId = document.getElementById('youtubeVideoId').value.trim();
+      if (videoId) {
+        document.getElementById('youtubePlayer').src = "https://www.youtube.com/embed/" + videoId;
+      } else {
+        alert("Please enter a valid YouTube Video ID");
+      }
+    }
+  </script>
+</body>
+</html>
